@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Our Doctors — Swasthya Hospital, Hyderabad</title>
+  <meta name="description" content="Meet the specialist doctors at Swasthya Hospital, Hyderabad. Expert cardiologists, neurologists, orthopedic surgeons, paediatricians and more.">
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+
+  <style>
+    /* ---- Page Hero ---- */
+    .page-hero {
+      background: linear-gradient(135deg, #050f1e 0%, var(--primary-dark) 50%, var(--primary) 100%);
+      padding: 80px 0 60px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 340px; height: 340px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .page-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: -60px;
+      width: 240px; height: 240px;
+      border-radius: 50%;
+      background: rgba(232,92,38,0.08);
+    }
+    .page-hero h1 {
+      font-family: var(--font-display);
+      font-size: 46px; font-weight: 800;
+      margin-bottom: 10px; color: #fff;
+    }
+    .page-hero p { font-size: 16px; opacity: 0.85; max-width: 520px; }
+    .breadcrumb-bar {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: rgba(255,255,255,0.65);
+      margin-top: 16px; font-family: var(--font-ui);
+    }
+    .breadcrumb-bar a { color: rgba(255,255,255,0.85); }
+    .breadcrumb-bar a:hover { color: #fff; }
+    .breadcrumb-bar i { font-size: 10px; }
+
+    /* ---- Search bar ---- */
+    .doctor-search-wrap {
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: 28px 32px;
+      margin-top: -40px;
+      position: relative;
+      z-index: 10;
+      border: 1px solid var(--border);
+    }
+    .search-input-wrap {
+      position: relative;
+    }
+    .search-input-wrap i {
+      position: absolute; left: 16px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--primary); font-size: 18px;
+    }
+    .doctor-search-input {
+      border: 1.5px solid var(--border); border-radius: 50px;
+      padding: 13px 20px 13px 48px;
+      font-size: 14px; width: 100%;
+      font-family: var(--font-body);
+      transition: var(--transition);
+      background: var(--bg-light);
+    }
+    .doctor-search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(11,83,148,0.1);
+      background: #fff;
+    }
+    .dept-select {
+      border: 1.5px solid var(--border); border-radius: 50px;
+      padding: 13px 20px; font-size: 14px; width: 100%;
+      font-family: var(--font-body); color: var(--text);
+      background: var(--bg-light); transition: var(--transition); cursor: pointer;
+    }
+    .dept-select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(11,83,148,0.1); }
+    .search-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff; border: none; border-radius: 50px;
+      padding: 13px 28px; font-size: 14px; font-weight: 700;
+      font-family: var(--font-ui); cursor: pointer; width: 100%;
+      transition: var(--transition);
+    }
+    .search-btn:hover { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); transform: translateY(-1px); }
+
+    /* ---- Doctor full card ---- */
+    .doctor-card {
+      background: var(--bg-white);
+      border-radius: var(--radius-lg);
+      border: 1.5px solid var(--border);
+      overflow: hidden;
+      transition: var(--transition);
+      height: 100%;
+      display: flex; flex-direction: column;
+    }
+    .doctor-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-md);
+      border-color: var(--primary);
+    }
+    .doctor-card .dc-img {
+      position: relative; overflow: hidden;
+    }
+    .doctor-card .dc-img img {
+      width: 100%; aspect-ratio: 1;
+      object-fit: cover; object-position: top;
+      transition: transform 0.4s;
+    }
+    .doctor-card:hover .dc-img img { transform: scale(1.05); }
+    .dc-dept-badge {
+      position: absolute; top: 14px; left: 14px;
+      background: var(--primary); color: #fff;
+      font-size: 11px; font-weight: 700;
+      padding: 4px 12px; border-radius: 50px;
+      font-family: var(--font-ui); letter-spacing: 0.5px;
+    }
+    .dc-social {
+      position: absolute; bottom: -50px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 10px;
+      background: linear-gradient(to top, rgba(11,83,148,0.92), rgba(11,83,148,0.6));
+      padding: 14px; transition: 0.4s;
+    }
+    .doctor-card:hover .dc-social { bottom: 0; }
+    .dc-social a {
+      color: #fff; width: 34px; height: 34px; border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; transition: var(--transition);
+    }
+    .dc-social a:hover { background: #fff; color: var(--primary); }
+    .dc-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
+    .dc-body h4 { font-size: 17px; font-weight: 800; margin-bottom: 4px; color: var(--text); }
+    .dc-specialty { font-size: 13px; color: var(--primary); font-weight: 600; font-family: var(--font-ui); margin-bottom: 6px; }
+    .dc-qual { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; line-height: 1.5; }
+    .dc-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .dc-badge {
+      font-size: 11px; font-weight: 600;
+      padding: 3px 10px; border-radius: 50px;
+      font-family: var(--font-ui);
+    }
+    .dc-badge.exp { background: rgba(11,83,148,0.1); color: var(--primary); }
+    .dc-badge.lang { background: rgba(0,137,123,0.1); color: var(--teal); }
+    .dc-badge.avail { background: rgba(56,161,105,0.1); color: #38a169; }
+    .dc-stars { color: #f4c542; font-size: 13px; margin-bottom: 12px; }
+    .dc-stars span { font-size: 12px; color: var(--text-muted); margin-left: 4px; }
+    .dc-actions { display: flex; gap: 8px; margin-top: auto; }
+    .dc-book-btn {
+      flex: 1; background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff; border: none; padding: 10px; border-radius: 50px;
+      font-size: 13px; font-weight: 700; font-family: var(--font-ui);
+      cursor: pointer; transition: var(--transition); text-align: center;
+      text-decoration: none; display: block;
+    }
+    .dc-book-btn:hover { background: linear-gradient(135deg, var(--accent), var(--accent-light)); color: #fff; }
+    .dc-profile-btn {
+      padding: 10px 16px; border-radius: 50px;
+      border: 1.5px solid var(--border); background: var(--bg-white);
+      color: var(--text-muted); font-size: 13px;
+      cursor: pointer; transition: var(--transition); font-family: var(--font-ui);
+    }
+    .dc-profile-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+    /* ---- No results ---- */
+    .no-results {
+      display: none; text-align: center; padding: 60px 20px;
+      color: var(--text-muted);
+    }
+    .no-results i { font-size: 48px; display: block; margin-bottom: 16px; color: var(--border); }
+
+    /* ---- Stats strip ---- */
+    .doctors-stats-strip {
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+      padding: 28px 0;
+    }
+    .dstat { text-align: center; color: #fff; }
+    .dstat strong { display: block; font-size: 32px; font-weight: 900; font-family: var(--font-ui); color: #ffd54f; }
+    .dstat span { font-size: 13px; opacity: 0.85; font-weight: 500; }
+
+    @media (max-width: 768px) {
+      .page-hero h1 { font-size: 30px; }
+      .doctor-search-wrap { margin-top: 0; border-radius: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="header" class="header sticky-top">
+  <div class="topbar d-flex align-items-center">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+      <div class="d-none d-md-flex align-items-center gap-4">
+        <span><i class="bi bi-clock me-1"></i> Mon – Sat, 8:00 AM – 10:00 PM</span>
+        <span><i class="bi bi-geo-alt me-1"></i> Banjara Hills, Hyderabad</span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span><i class="bi bi-telephone-fill me-1"></i> Emergency: <strong>104 / +91 40-6600-1000</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="branding d-flex align-items-center">
+    <div class="container position-relative d-flex align-items-center justify-content-end">
+      <a href="index.html" class="logo d-flex align-items-center me-auto">
+        <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+        <div class="logo-text">
+          <span class="logo-primary">Swasthya</span><span class="logo-secondary">Hospital</span>
+          <small>Hyderabad • Est. 1998</small>
+        </div>
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#services">Services</a></li>
+          <li><a href="index.html#tabs">Departments</a></li>
+          <li><a href="doctors.html" class="active">Doctors</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+      <a class="cta-btn" href="appointment.html">Book Appointment</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- ===== PAGE HERO ===== -->
+  <section class="page-hero">
+    <div class="container position-relative" style="z-index:2;">
+      <h1>Our Specialist Doctors</h1>
+      <p>Meet our team of 58+ board-certified specialists dedicated to exceptional healthcare across Hyderabad and Telangana.</p>
+      <div class="breadcrumb-bar">
+        <a href="index.html">Home</a>
+        <i class="bi bi-chevron-right"></i>
+        <span>Our Doctors</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS STRIP ===== -->
+  <section class="doctors-stats-strip">
+    <div class="container">
+      <div class="row gy-3">
+        <div class="col-6 col-md-3"><div class="dstat"><strong>58+</strong><span>Specialists</span></div></div>
+        <div class="col-6 col-md-3"><div class="dstat"><strong>18</strong><span>Departments</span></div></div>
+        <div class="col-6 col-md-3"><div class="dstat"><strong>2.4L+</strong><span>Patients Treated</span></div></div>
+        <div class="col-6 col-md-3"><div class="dstat"><strong>25+</strong><span>Years Combined Avg Exp.</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== SEARCH & FILTER ===== -->
+  <section class="section" style="padding-top: 50px; padding-bottom: 0;">
+    <div class="container">
+      <div class="doctor-search-wrap" data-aos="fade-up">
+        <div class="row gy-3 align-items-end">
+          <div class="col-md-5">
+            <label class="form-label fw-600" style="font-family:var(--font-ui);font-size:13px;font-weight:600;">Search by Name</label>
+            <div class="search-input-wrap">
+              <i class="bi bi-search"></i>
+              <input type="text" id="doctorSearch" class="doctor-search-input" placeholder="Search doctor name...">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label fw-600" style="font-family:var(--font-ui);font-size:13px;font-weight:600;">Filter by Department</label>
+            <select id="deptFilter" class="dept-select">
+              <option value="all">All Departments</option>
+              <option value="cardiology">Cardiology</option>
+              <option value="neurology">Neurology</option>
+              <option value="orthopedics">Orthopedics</option>
+              <option value="pediatrics">Pediatrics</option>
+              <option value="oncology">Oncology</option>
+              <option value="gynecology">Gynaecology</option>
+              <option value="ophthalmology">Ophthalmology</option>
+              <option value="ent">ENT</option>
+              <option value="dermatology">Dermatology</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <button class="search-btn" onclick="filterDoctors()"><i class="bi bi-funnel me-2"></i>Filter Doctors</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter pills -->
+      <div class="doctors-filter mt-4" data-aos="fade-up">
+        <button class="active" data-filter="all">All</button>
+        <button data-filter="cardiology">Cardiology</button>
+        <button data-filter="neurology">Neurology</button>
+        <button data-filter="orthopedics">Orthopedics</button>
+        <button data-filter="pediatrics">Pediatrics</button>
+        <button data-filter="oncology">Oncology</button>
+        <button data-filter="gynecology">Gynaecology</button>
+        <button data-filter="ophthalmology">Ophthalmology</button>
+        <button data-filter="ent">ENT</button>
+        <button data-filter="dermatology">Dermatology</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== DOCTORS GRID ===== -->
+  <section class="section" style="padding-top: 40px;">
+    <div class="container">
+      <div class="row gy-4" id="doctorsGrid">
+
+        <!-- 1 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="cardiology" data-name="dr venkatesh rao" data-aos="fade-up" data-aos-delay="100">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Venkatesh Rao">
+              <div class="dc-dept-badge">Cardiology</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Venkatesh Rao</h4>
+              <div class="dc-specialty">Senior Cardiologist</div>
+              <div class="dc-qual">MBBS, MD, DM (AIIMS Delhi) · HOD – Cardiology</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">22 Yrs Exp</span>
+                <span class="dc-badge lang">Telugu, Hindi, English</span>
+                <span class="dc-badge avail">Available Today</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.9 (312 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Venkatesh+Rao" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="neurology" data-name="dr ananya krishnamurthy" data-aos="fade-up" data-aos-delay="150">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Ananya Krishnamurthy">
+              <div class="dc-dept-badge">Neurology</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Ananya Krishnamurthy</h4>
+              <div class="dc-specialty">Neurosurgeon</div>
+              <div class="dc-qual">MBBS, MS, MCh (NIMHANS Bengaluru) · HOD – Neurosurgery</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">20 Yrs Exp</span>
+                <span class="dc-badge lang">Telugu, Kannada, English</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.8 (278 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Ananya+Krishnamurthy" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="orthopedics" data-name="dr srinivas reddy" data-aos="fade-up" data-aos-delay="200">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Srinivas Reddy">
+              <div class="dc-dept-badge">Orthopedics</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Srinivas Reddy</h4>
+              <div class="dc-specialty">Orthopedic Surgeon</div>
+              <div class="dc-qual">MBBS, MS Ortho, FAAOS (Osmania Medical College)</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">17 Yrs Exp</span>
+                <span class="dc-badge lang">Telugu, Hindi, English</span>
+                <span class="dc-badge avail">Available Today</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.7 (195 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Srinivas+Reddy" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="pediatrics" data-name="dr meena iyer" data-aos="fade-up" data-aos-delay="250">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Meena Iyer">
+              <div class="dc-dept-badge">Pediatrics</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Meena Iyer</h4>
+              <div class="dc-specialty">Paediatrician & Neonatologist</div>
+              <div class="dc-qual">MBBS, MD Paediatrics, FAAP (CMC Vellore)</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">14 Yrs Exp</span>
+                <span class="dc-badge lang">Tamil, Telugu, English</span>
+                <span class="dc-badge avail">Available Today</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.9 (401 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Meena+Iyer" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="oncology" data-name="dr sunita joshi" data-aos="fade-up" data-aos-delay="100">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Sunita Joshi">
+              <div class="dc-dept-badge">Oncology</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Sunita Joshi</h4>
+              <div class="dc-specialty">Senior Oncologist</div>
+              <div class="dc-qual">MBBS, MD, DNB (CMC Vellore) · HOD – Oncology</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">18 Yrs Exp</span>
+                <span class="dc-badge lang">Hindi, Telugu, English</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.8 (256 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Sunita+Joshi" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="gynecology" data-name="dr lakshmi prasad" data-aos="fade-up" data-aos-delay="150">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Lakshmi Prasad">
+              <div class="dc-dept-badge">Gynaecology</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Lakshmi Prasad</h4>
+              <div class="dc-specialty">Gynaecologist & Obstetrician</div>
+              <div class="dc-qual">MBBS, MS OBG (Gandhi Medical College, Hyd)</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">16 Yrs Exp</span>
+                <span class="dc-badge lang">Telugu, Hindi, English</span>
+                <span class="dc-badge avail">Available Today</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.9 (534 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Lakshmi+Prasad" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 7 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="cardiology" data-name="dr ramakrishna nair" data-aos="fade-up" data-aos-delay="200">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Ramakrishna Nair">
+              <div class="dc-dept-badge">Cardiology</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Ramakrishna Nair</h4>
+              <div class="dc-specialty">Interventional Cardiologist</div>
+              <div class="dc-qual">MBBS, MD, MRCP (Amrita Institute, Kochi)</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">15 Yrs Exp</span>
+                <span class="dc-badge lang">Malayalam, Telugu, English</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.7 (189 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Ramakrishna+Nair" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="ophthalmology" data-name="dr padma subramaniam" data-aos="fade-up" data-aos-delay="250">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Padma Subramaniam">
+              <div class="dc-dept-badge">Ophthalmology</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Padma Subramaniam</h4>
+              <div class="dc-specialty">Senior Ophthalmologist</div>
+              <div class="dc-qual">MBBS, MS Ophthalmology, FICOS (Sankara Nethralaya)</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">16 Yrs Exp</span>
+                <span class="dc-badge lang">Tamil, Telugu, English</span>
+                <span class="dc-badge avail">Available Today</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.8 (311 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Padma+Subramaniam" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 9 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="neurology" data-name="dr suresh babu" data-aos="fade-up" data-aos-delay="100">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Suresh Babu">
+              <div class="dc-dept-badge">Neurology</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Suresh Babu</h4>
+              <div class="dc-specialty">Neurologist</div>
+              <div class="dc-qual">MBBS, MD, DM Neurology (Nizam's Institute, Hyd)</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">12 Yrs Exp</span>
+                <span class="dc-badge lang">Telugu, Hindi, English</span>
+              </div>
+              <div class="dc-stars">★★★★☆ <span>4.6 (143 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Suresh+Babu" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 10 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="ent" data-name="dr krishna murthy" data-aos="fade-up" data-aos-delay="150">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Krishna Murthy">
+              <div class="dc-dept-badge">ENT</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Krishna Murthy</h4>
+              <div class="dc-specialty">ENT Specialist</div>
+              <div class="dc-qual">MBBS, MS ENT (Hyderabad Medical College)</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">11 Yrs Exp</span>
+                <span class="dc-badge lang">Telugu, Hindi, English</span>
+                <span class="dc-badge avail">Available Today</span>
+              </div>
+              <div class="dc-stars">★★★★☆ <span>4.5 (128 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Krishna+Murthy" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 11 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="dermatology" data-name="dr preethi sharma" data-aos="fade-up" data-aos-delay="200">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Preethi Sharma">
+              <div class="dc-dept-badge">Dermatology</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Preethi Sharma</h4>
+              <div class="dc-specialty">Dermatologist & Cosmetologist</div>
+              <div class="dc-qual">MBBS, MD Dermatology (KIMS, Hyderabad)</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">10 Yrs Exp</span>
+                <span class="dc-badge lang">Telugu, Hindi, English</span>
+                <span class="dc-badge avail">Available Today</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.8 (209 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Preethi+Sharma" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 12 -->
+        <div class="col-lg-3 col-md-6 doctor-col" data-dept="oncology" data-name="dr ravi shankar" data-aos="fade-up" data-aos-delay="250">
+          <div class="doctor-card">
+            <div class="dc-img">
+              <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&h=400&q=80&auto=format&fit=crop&crop=face" alt="Dr. Ravi Shankar">
+              <div class="dc-dept-badge">Oncology</div>
+              <div class="dc-social">
+                <a href="#"><i class="bi bi-twitter-x"></i></a>
+                <a href="#"><i class="bi bi-linkedin"></i></a>
+                <a href="#"><i class="bi bi-envelope"></i></a>
+              </div>
+            </div>
+            <div class="dc-body">
+              <h4>Dr. Ravi Shankar</h4>
+              <div class="dc-specialty">Radiation Oncologist</div>
+              <div class="dc-qual">MBBS, MD, FASCO (Tata Memorial, Mumbai)</div>
+              <div class="dc-meta">
+                <span class="dc-badge exp">14 Yrs Exp</span>
+                <span class="dc-badge lang">Telugu, Hindi, English</span>
+              </div>
+              <div class="dc-stars">★★★★★ <span>4.7 (175 reviews)</span></div>
+              <div class="dc-actions">
+                <a href="appointment.html?doctor=Dr.+Ravi+Shankar" class="dc-book-btn">Book Appointment</a>
+                <button class="dc-profile-btn"><i class="bi bi-person"></i></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /row -->
+
+      <!-- No results -->
+      <div class="no-results" id="noResults">
+        <i class="bi bi-person-x"></i>
+        <h5>No doctors found</h5>
+        <p>Try a different name or department filter.</p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<!-- ===== FOOTER ===== -->
+<footer id="footer">
+  <div class="container footer-top">
+    <div class="row gy-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="footer-logo-wrap">
+          <i class="fas fa-heartbeat footer-logo-icon"></i>
+          <div>
+            <span class="footer-logo-text">Swasthya Hospital</span>
+            <small>Banjara Hills, Hyderabad</small>
+          </div>
+        </div>
+        <p class="mt-3">Delivering compassionate, world-class healthcare to Telangana and Andhra Pradesh since 1998. NABH Accredited · NABL Certified.</p>
+        <div class="social-links mt-3">
+          <a href="#"><i class="bi bi-twitter-x"></i></a>
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="#"><i class="bi bi-instagram"></i></a>
+          <a href="#"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-3 footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html">Home</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#about">About Us</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#services">Services</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="doctors.html">Doctors</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="appointment.html">Appointment</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-3 footer-links">
+        <h4>Departments</h4>
+        <ul>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#tabs">Cardiology</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#tabs">Neurology</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#tabs">Pediatrics</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#tabs">Oncology</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#tabs">Ophthalmology</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-md-12">
+        <h4>Contact & Emergency</h4>
+        <p><strong style="color:#c0cdd8;">Emergency:</strong> 104 / +91 40-6600-1000<br>
+        <strong style="color:#c0cdd8;">OPD Helpline:</strong> +91 40-6600-1001<br>
+        <strong style="color:#c0cdd8;">Email:</strong> info@swasthyahospital.in<br>
+        <strong style="color:#c0cdd8;">Address:</strong> Plot 12, Road 10, Banjara Hills, Hyderabad – 500034</p>
+      </div>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <div class="credits">&copy; 2025 <strong>Swasthya Hospital</strong>, Hyderabad. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="main.js"></script>
+<script>
+  // Filter by pill buttons
+  document.querySelectorAll('.doctors-filter button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.doctors-filter button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.getElementById('deptFilter').value = filter;
+      filterDoctors();
+    });
+  });
+
+  // Combined filter function
+  function filterDoctors() {
+    const search = document.getElementById('doctorSearch').value.toLowerCase();
+    const dept = document.getElementById('deptFilter').value;
+    let visible = 0;
+    document.querySelectorAll('.doctor-col').forEach(col => {
+      const name = col.dataset.name;
+      const colDept = col.dataset.dept;
+      const matchName = name.includes(search);
+      const matchDept = dept === 'all' || colDept === dept;
+      if (matchName && matchDept) {
+        col.style.display = '';
+        visible++;
+      } else {
+        col.style.display = 'none';
+      }
+    });
+    document.getElementById('noResults').style.display = visible === 0 ? 'block' : 'none';
+  }
+
+  // Live search
+  document.getElementById('doctorSearch').addEventListener('input', filterDoctors);
+  document.getElementById('deptFilter').addEventListener('change', filterDoctors);
+</script>
+</body>
+</html>

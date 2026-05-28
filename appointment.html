@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Book Appointment — Swasthya Hospital, Hyderabad</title>
+  <meta name="description" content="Book an appointment with specialist doctors at Swasthya Hospital, Banjara Hills, Hyderabad. Same-day appointments available.">
+
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
+
+  <style>
+    .page-hero {
+      background: linear-gradient(135deg, #050f1e 0%, var(--primary-dark) 50%, var(--primary) 100%);
+      padding: 80px 0 60px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; top: -80px; right: -80px;
+      width: 340px; height: 340px; border-radius: 50%;
+      background: rgba(255,255,255,0.04);
+    }
+    .page-hero h1 {
+      font-family: var(--font-display);
+      font-size: 46px; font-weight: 800;
+      margin-bottom: 10px; color: #fff;
+    }
+    .page-hero p { font-size: 16px; opacity: 0.85; max-width: 520px; }
+    .breadcrumb-bar {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: rgba(255,255,255,0.65);
+      margin-top: 16px; font-family: var(--font-ui);
+    }
+    .breadcrumb-bar a { color: rgba(255,255,255,0.85); }
+    .breadcrumb-bar a:hover { color: #fff; }
+
+    /* Steps */
+    .appt-steps {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0; margin-bottom: 40px; flex-wrap: wrap;
+    }
+    .appt-step {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-ui); font-size: 13px; font-weight: 600;
+      color: var(--text-muted); padding: 10px 0;
+    }
+    .appt-step .step-num {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--border); color: var(--text-muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 800; transition: var(--transition);
+    }
+    .appt-step.active .step-num { background: var(--primary); color: #fff; }
+    .appt-step.active { color: var(--primary); }
+    .appt-step.done .step-num { background: var(--teal); color: #fff; }
+    .appt-step.done { color: var(--teal); }
+    .step-line { flex: 1; min-width: 40px; height: 2px; background: var(--border); margin: 0 8px; }
+    .step-line.done { background: var(--teal); }
+
+    /* Step panels */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    /* Doctor picker */
+    .doctor-picker-card {
+      border: 2px solid var(--border);
+      border-radius: var(--radius); padding: 16px;
+      cursor: pointer; transition: var(--transition);
+      display: flex; align-items: center; gap: 14px;
+      background: var(--bg-white);
+    }
+    .doctor-picker-card:hover { border-color: var(--primary); box-shadow: var(--shadow-sm); }
+    .doctor-picker-card.selected { border-color: var(--primary); background: rgba(11,83,148,0.04); }
+    .doctor-picker-card img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; }
+    .dpc-name { font-size: 14px; font-weight: 700; color: var(--text); font-family: var(--font-ui); }
+    .dpc-spec { font-size: 12px; color: var(--primary); font-weight: 600; }
+    .dpc-exp { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .dpc-check {
+      margin-left: auto; width: 24px; height: 24px; border-radius: 50%;
+      border: 2px solid var(--border); display: flex; align-items: center;
+      justify-content: center; color: transparent; transition: var(--transition);
+      flex-shrink: 0;
+    }
+    .doctor-picker-card.selected .dpc-check { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    /* Time slots */
+    .slot-btn {
+      padding: 9px 16px; border-radius: 10px;
+      border: 1.5px solid var(--border); background: var(--bg-light);
+      color: var(--text); font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: var(--transition);
+      font-family: var(--font-ui);
+    }
+    .slot-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .slot-btn.selected { background: var(--primary); border-color: var(--primary); color: #fff; }
+    .slot-btn.unavailable { opacity: 0.4; cursor: not-allowed; }
+
+    /* Summary card */
+    .summary-card {
+      background: var(--bg-white); border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg); padding: 28px;
+      position: sticky; top: 100px;
+    }
+    .summary-card h5 { font-size: 16px; font-weight: 800; margin-bottom: 20px; color: var(--primary); font-family: var(--font-ui); }
+    .summary-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .summary-row:last-of-type { border-bottom: none; }
+    .summary-row span:first-child { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; font-family: var(--font-ui); }
+    .summary-row span:last-child { font-size: 14px; font-weight: 600; color: var(--text); text-align: right; max-width: 160px; }
+    .summary-empty { font-size: 13px; color: var(--text-muted); font-style: italic; }
+
+    /* Nav buttons */
+    .step-nav { display: flex; gap: 12px; margin-top: 28px; }
+    .btn-prev {
+      padding: 12px 28px; border-radius: 50px;
+      border: 2px solid var(--border); background: var(--bg-white);
+      color: var(--text-muted); font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: var(--transition); font-family: var(--font-ui);
+    }
+    .btn-prev:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-next {
+      flex: 1; padding: 12px 28px; border-radius: 50px;
+      border: none; background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff; font-size: 14px; font-weight: 700;
+      cursor: pointer; transition: var(--transition); font-family: var(--font-ui);
+      box-shadow: 0 4px 16px rgba(11,83,148,0.25);
+    }
+    .btn-next:hover { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); transform: translateY(-1px); }
+
+    /* Confirmation */
+    .confirmation-box {
+      text-align: center; padding: 48px 24px;
+      background: var(--bg-white); border-radius: var(--radius-lg);
+      border: 1.5px solid rgba(0,137,123,0.3);
+    }
+    .confirm-icon {
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(0,137,123,0.1); color: var(--teal);
+      font-size: 38px; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .confirm-id {
+      font-size: 22px; font-weight: 900; color: var(--primary);
+      font-family: var(--font-ui); letter-spacing: 2px;
+      background: var(--bg-light); padding: 10px 24px; border-radius: 10px;
+      display: inline-block; margin: 10px 0;
+    }
+
+    /* Info boxes */
+    .info-highlight {
+      background: rgba(11,83,148,0.05);
+      border-left: 4px solid var(--primary);
+      border-radius: 0 10px 10px 0;
+      padding: 14px 18px; margin-bottom: 20px;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .info-highlight strong { color: var(--primary); }
+
+    /* Form styles reuse */
+    .appt-form-card .form-label { font-size: 13px; font-weight: 600; font-family: var(--font-ui); color: var(--text); margin-bottom: 6px; }
+    .appt-form-card .form-control,
+    .appt-form-card .form-select {
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 11px 14px; font-size: 14px; color: var(--text);
+      font-family: var(--font-body); transition: var(--transition);
+      background: var(--bg-light);
+    }
+    .appt-form-card .form-control:focus,
+    .appt-form-card .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(11,83,148,0.10);
+      background: #fff; outline: none;
+    }
+
+    @media (max-width: 768px) {
+      .page-hero h1 { font-size: 30px; }
+      .appt-steps { gap: 4px; }
+      .step-line { min-width: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header id="header" class="header sticky-top">
+  <div class="topbar d-flex align-items-center">
+    <div class="container d-flex justify-content-center justify-content-md-between">
+      <div class="d-none d-md-flex align-items-center gap-4">
+        <span><i class="bi bi-clock me-1"></i> Mon – Sat, 8:00 AM – 10:00 PM</span>
+        <span><i class="bi bi-geo-alt me-1"></i> Banjara Hills, Hyderabad</span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <span><i class="bi bi-telephone-fill me-1"></i> Emergency: <strong>104 / +91 40-6600-1000</strong></span>
+      </div>
+    </div>
+  </div>
+  <div class="branding d-flex align-items-center">
+    <div class="container position-relative d-flex align-items-center justify-content-end">
+      <a href="index.html" class="logo d-flex align-items-center me-auto">
+        <div class="logo-icon"><i class="fas fa-heartbeat"></i></div>
+        <div class="logo-text">
+          <span class="logo-primary">Swasthya</span><span class="logo-secondary">Hospital</span>
+          <small>Hyderabad • Est. 1998</small>
+        </div>
+      </a>
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#services">Services</a></li>
+          <li><a href="index.html#tabs">Departments</a></li>
+          <li><a href="doctors.html">Doctors</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+      </nav>
+      <a class="cta-btn" href="appointment.html">Book Appointment</a>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="container position-relative" style="z-index:2;">
+      <h1>Book an Appointment</h1>
+      <p>Choose your specialist, pick a convenient slot, and confirm — we'll take care of the rest.</p>
+      <div class="breadcrumb-bar">
+        <a href="index.html">Home</a>
+        <i class="bi bi-chevron-right"></i>
+        <span>Appointment</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- APPOINTMENT SECTION -->
+  <section class="section" style="background: var(--bg-light);">
+    <div class="container">
+
+      <!-- Steps indicator -->
+      <div class="appt-steps" data-aos="fade-up">
+        <div class="appt-step active" id="step-ind-1">
+          <div class="step-num">1</div>
+          <span>Choose Doctor</span>
+        </div>
+        <div class="step-line" id="line-1"></div>
+        <div class="appt-step" id="step-ind-2">
+          <div class="step-num">2</div>
+          <span>Select Date & Slot</span>
+        </div>
+        <div class="step-line" id="line-2"></div>
+        <div class="appt-step" id="step-ind-3">
+          <div class="step-num">3</div>
+          <span>Patient Details</span>
+        </div>
+        <div class="step-line" id="line-3"></div>
+        <div class="appt-step" id="step-ind-4">
+          <div class="step-num">4</div>
+          <span>Confirm</span>
+        </div>
+      </div>
+
+      <div class="row gy-4 align-items-start">
+
+        <!-- LEFT: Steps -->
+        <div class="col-lg-8">
+          <div class="appt-form-card" data-aos="fade-up" data-aos-delay="100">
+
+            <!-- STEP 1: Choose Department & Doctor -->
+            <div class="step-panel active" id="step1">
+              <h4 class="mb-1" style="font-size:20px;font-weight:800;">Step 1: Choose Department & Doctor</h4>
+              <p class="text-muted mb-4" style="font-size:14px;">Select the department and preferred doctor for your visit.</p>
+
+              <div class="mb-4">
+                <label class="form-label">Department <span class="text-danger">*</span></label>
+                <select class="form-select" id="deptSelect" onchange="filterDoctorsByDept()">
+                  <option value="all">All Departments</option>
+                  <option value="cardiology">Cardiology</option>
+                  <option value="neurology">Neurology &amp; Neurosurgery</option>
+                  <option value="orthopedics">Orthopedics</option>
+                  <option value="pediatrics">Pediatrics &amp; NICU</option>
+                  <option value="gynecology">Gynaecology &amp; Obstetrics</option>
+                  <option value="oncology">Oncology</option>
+                  <option value="ophthalmology">Ophthalmology</option>
+                  <option value="ent">ENT</option>
+                  <option value="dermatology">Dermatology</option>
+                </select>
+              </div>
+
+              <label class="form-label">Select Doctor <span class="text-danger">*</span></label>
+              <div class="row gy-3" id="doctorPickerGrid">
+
+                <div class="col-md-6 doctor-pick-col" data-dept="cardiology">
+                  <div class="doctor-picker-card" onclick="selectDoctor(this, 'Dr. Venkatesh Rao', 'Senior Cardiologist', 'Cardiology')">
+                    <img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=100&h=100&q=80&auto=format&fit=crop&crop=face" alt="Dr. Venkatesh Rao">
+                    <div>
+                      <div class="dpc-name">Dr. Venkatesh Rao</div>
+                      <div class="dpc-spec">Senior Cardiologist</div>
+                      <div class="dpc-exp">22 Yrs Exp · AIIMS Delhi</div>
+                    </div>
+                    <div class="dpc-check"><i class="bi bi-check2"></i></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 doctor-pick-col" data-dept="neurology">
+                  <div class="doctor-picker-card" onclick="selectDoctor(this, 'Dr. Ananya Krishnamurthy', 'Neurosurgeon', 'Neurology')">
+                    <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&q=80&auto=format&fit=crop&crop=face" alt="Dr. Ananya Krishnamurthy">
+                    <div>
+                      <div class="dpc-name">Dr. Ananya Krishnamurthy</div>
+                      <div class="dpc-spec">Neurosurgeon</div>
+                      <div class="dpc-exp">20 Yrs Exp · NIMHANS</div>
+                    </div>
+                    <div class="dpc-check"><i class="bi bi-check2"></i></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 doctor-pick-col" data-dept="orthopedics">
+                  <div class="doctor-picker-card" onclick="selectDoctor(this, 'Dr. Srinivas Reddy', 'Orthopedic Surgeon', 'Orthopedics')">
+                    <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=100&h=100&q=80&auto=format&fit=crop&crop=face" alt="Dr. Srinivas Reddy">
+                    <div>
+                      <div class="dpc-name">Dr. Srinivas Reddy</div>
+                      <div class="dpc-spec">Orthopedic Surgeon</div>
+                      <div class="dpc-exp">17 Yrs Exp · Osmania Medical College</div>
+                    </div>
+                    <div class="dpc-check"><i class="bi bi-check2"></i></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 doctor-pick-col" data-dept="pediatrics">
+                  <div class="doctor-picker-card" onclick="selectDoctor(this, 'Dr. Meena Iyer', 'Paediatrician', 'Pediatrics')">
+                    <img src="https://images.unsplash.com/photo-1651008376811-b90baee60c1f?w=100&h=100&q=80&auto=format&fit=crop&crop=face" alt="Dr. Meena Iyer">
+                    <div>
+                      <div class="dpc-name">Dr. Meena Iyer</div>
+                      <div class="dpc-spec">Paediatrician</div>
+                      <div class="dpc-exp">14 Yrs Exp · CMC Vellore</div>
+                    </div>
+                    <div class="dpc-check"><i class="bi bi-check2"></i></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 doctor-pick-col" data-dept="oncology">
+                  <div class="doctor-picker-card" onclick="selectDoctor(this, 'Dr. Sunita Joshi', 'Oncologist', 'Oncology')">
+                    <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&h=100&q=80&auto=format&fit=crop&crop=face" alt="Dr. Sunita Joshi">
+                    <div>
+                      <div class="dpc-name">Dr. Sunita Joshi</div>
+                      <div class="dpc-spec">Senior Oncologist</div>
+                      <div class="dpc-exp">18 Yrs Exp · CMC Vellore</div>
+                    </div>
+                    <div class="dpc-check"><i class="bi bi-check2"></i></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 doctor-pick-col" data-dept="gynecology">
+                  <div class="doctor-picker-card" onclick="selectDoctor(this, 'Dr. Lakshmi Prasad', 'Gynaecologist', 'Gynaecology')">
+                    <img src="https://images.unsplash.com/photo-1527613426441-4da17471b66d?w=100&h=100&q=80&auto=format&fit=crop&crop=face" alt="Dr. Lakshmi Prasad">
+                    <div>
+                      <div class="dpc-name">Dr. Lakshmi Prasad</div>
+                      <div class="dpc-spec">Gynaecologist</div>
+                      <div class="dpc-exp">16 Yrs Exp · Gandhi Medical College</div>
+                    </div>
+                    <div class="dpc-check"><i class="bi bi-check2"></i></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 doctor-pick-col" data-dept="ophthalmology">
+                  <div class="doctor-picker-card" onclick="selectDoctor(this, 'Dr. Padma Subramaniam', 'Ophthalmologist', 'Ophthalmology')">
+                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=100&h=100&q=80&auto=format&fit=crop&crop=face" alt="Dr. Padma Subramaniam">
+                    <div>
+                      <div class="dpc-name">Dr. Padma Subramaniam</div>
+                      <div class="dpc-spec">Senior Ophthalmologist</div>
+                      <div class="dpc-exp">16 Yrs Exp · Sankara Nethralaya</div>
+                    </div>
+                    <div class="dpc-check"><i class="bi bi-check2"></i></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 doctor-pick-col" data-dept="ent">
+                  <div class="doctor-picker-card" onclick="selectDoctor(this, 'Dr. Krishna Murthy', 'ENT Specialist', 'ENT')">
+                    <img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=100&h=100&q=80&auto=format&fit=crop&crop=face" alt="Dr. Krishna Murthy">
+                    <div>
+                      <div class="dpc-name">Dr. Krishna Murthy</div>
+                      <div class="dpc-spec">ENT Specialist</div>
+                      <div class="dpc-exp">11 Yrs Exp · Hyd Medical College</div>
+                    </div>
+                    <div class="dpc-check"><i class="bi bi-check2"></i></div>
+                  </div>
+                </div>
+
+                <div class="col-md-6 doctor-pick-col" data-dept="dermatology">
+                  <div class="doctor-picker-card" onclick="selectDoctor(this, 'Dr. Preethi Sharma', 'Dermatologist', 'Dermatology')">
+                    <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100&h=100&q=80&auto=format&fit=crop&crop=face" alt="Dr. Preethi Sharma">
+                    <div>
+                      <div class="dpc-name">Dr. Preethi Sharma</div>
+                      <div class="dpc-spec">Dermatologist &amp; Cosmetologist</div>
+                      <div class="dpc-exp">10 Yrs Exp · KIMS Hyderabad</div>
+                    </div>
+                    <div class="dpc-check"><i class="bi bi-check2"></i></div>
+                  </div>
+                </div>
+
+              </div>
+
+              <p class="text-danger mt-2" id="doctorError" style="display:none;font-size:13px;"><i class="bi bi-exclamation-circle me-1"></i>Please select a doctor to continue.</p>
+
+              <div class="step-nav">
+                <button class="btn-next" onclick="goStep(2)">Next: Select Date &amp; Slot <i class="bi bi-arrow-right ms-2"></i></button>
+              </div>
+            </div>
+
+            <!-- STEP 2: Date & Time Slot -->
+            <div class="step-panel" id="step2">
+              <h4 class="mb-1" style="font-size:20px;font-weight:800;">Step 2: Select Date &amp; Time Slot</h4>
+              <p class="text-muted mb-4" style="font-size:14px;">OPD hours: Mon–Sat 8 AM–8 PM · Sunday 9 AM–2 PM</p>
+
+              <div class="row gy-4 mb-4">
+                <div class="col-md-6">
+                  <label class="form-label">Preferred Date <span class="text-danger">*</span></label>
+                  <input type="date" id="apptDate" class="form-control" onchange="updateDate()">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Visit Type <span class="text-danger">*</span></label>
+                  <select class="form-select" id="visitType" onchange="updateVisitType()">
+                    <option value="Walk-In OPD">Walk-In OPD</option>
+                    <option value="Tele-Consultation (Video)">Tele-Consultation (Video)</option>
+                    <option value="Home Visit">Home Visit</option>
+                    <option value="Second Opinion">Second Opinion</option>
+                  </select>
+                </div>
+              </div>
+
+              <label class="form-label mb-3">Available Time Slots <span class="text-danger">*</span></label>
+              <div class="mb-2" style="font-size:12px;font-weight:600;color:var(--text-muted);font-family:var(--font-ui);">MORNING</div>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="slot-btn" onclick="selectSlot(this, '8:00 AM')">8:00 AM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '8:30 AM')">8:30 AM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '9:00 AM')">9:00 AM</button>
+                <button class="slot-btn unavailable" disabled>9:30 AM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '10:00 AM')">10:00 AM</button>
+                <button class="slot-btn unavailable" disabled>10:30 AM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '11:00 AM')">11:00 AM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '11:30 AM')">11:30 AM</button>
+              </div>
+              <div class="mb-2" style="font-size:12px;font-weight:600;color:var(--text-muted);font-family:var(--font-ui);">AFTERNOON</div>
+              <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="slot-btn unavailable" disabled>12:00 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '12:30 PM')">12:30 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '1:00 PM')">1:00 PM</button>
+                <button class="slot-btn unavailable" disabled>1:30 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '2:00 PM')">2:00 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '2:30 PM')">2:30 PM</button>
+                <button class="slot-btn unavailable" disabled>3:00 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '3:30 PM')">3:30 PM</button>
+              </div>
+              <div class="mb-2" style="font-size:12px;font-weight:600;color:var(--text-muted);font-family:var(--font-ui);">EVENING</div>
+              <div class="d-flex flex-wrap gap-2 mb-4">
+                <button class="slot-btn" onclick="selectSlot(this, '4:00 PM')">4:00 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '4:30 PM')">4:30 PM</button>
+                <button class="slot-btn unavailable" disabled>5:00 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '5:30 PM')">5:30 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '6:00 PM')">6:00 PM</button>
+                <button class="slot-btn unavailable" disabled>6:30 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '7:00 PM')">7:00 PM</button>
+                <button class="slot-btn" onclick="selectSlot(this, '7:30 PM')">7:30 PM</button>
+              </div>
+              <div class="d-flex gap-3 align-items-center" style="font-size:12px;color:var(--text-muted);">
+                <span><span style="display:inline-block;width:12px;height:12px;background:var(--bg-light);border:1.5px solid var(--border);border-radius:3px;margin-right:4px;"></span>Available</span>
+                <span><span style="display:inline-block;width:12px;height:12px;background:var(--primary);border-radius:3px;margin-right:4px;"></span>Selected</span>
+                <span><span style="display:inline-block;width:12px;height:12px;background:#e9ecef;border-radius:3px;margin-right:4px;opacity:0.5;"></span>Booked</span>
+              </div>
+
+              <p class="text-danger mt-2" id="slotError" style="display:none;font-size:13px;"><i class="bi bi-exclamation-circle me-1"></i>Please select a date and time slot.</p>
+
+              <div class="step-nav">
+                <button class="btn-prev" onclick="goStep(1)"><i class="bi bi-arrow-left me-2"></i>Back</button>
+                <button class="btn-next" onclick="goStep(3)">Next: Patient Details <i class="bi bi-arrow-right ms-2"></i></button>
+              </div>
+            </div>
+
+            <!-- STEP 3: Patient Details -->
+            <div class="step-panel" id="step3">
+              <h4 class="mb-1" style="font-size:20px;font-weight:800;">Step 3: Patient Details</h4>
+              <p class="text-muted mb-4" style="font-size:14px;">Please fill in your information accurately for appointment confirmation.</p>
+
+              <div class="info-highlight">
+                <strong>First visit?</strong> Please bring your Aadhaar card and any previous medical records. For insurance, carry your policy card. Cashless available for Ayushman Bharat, CGHS &amp; EHS Telangana.
+              </div>
+
+              <div class="row gy-3">
+                <div class="col-md-6">
+                  <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                  <input type="text" id="patName" class="form-control" placeholder="e.g. Ramesh Kumar Reddy" required oninput="updateSummary()">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Age <span class="text-danger">*</span></label>
+                  <input type="number" id="patAge" class="form-control" placeholder="e.g. 35" min="1" max="120" required oninput="updateSummary()">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Gender <span class="text-danger">*</span></label>
+                  <select id="patGender" class="form-select" onchange="updateSummary()">
+                    <option value="">Select Gender</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Mobile Number <span class="text-danger">*</span></label>
+                  <input type="tel" id="patPhone" class="form-control" placeholder="+91 98XXX XXXXX" required oninput="updateSummary()">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Email Address</label>
+                  <input type="email" id="patEmail" class="form-control" placeholder="your@email.com">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">City / Location</label>
+                  <select id="patCity" class="form-select" onchange="updateSummary()">
+                    <option value="">Select City</option>
+                    <option>Hyderabad – Banjara Hills (Main)</option>
+                    <option>Hyderabad – Secunderabad Branch</option>
+                    <option>Warangal</option>
+                    <option>Vijayawada (AP)</option>
+                    <option>Nalgonda</option>
+                    <option>Karimnagar</option>
+                    <option>Nizamabad</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Patient Type</label>
+                  <select id="patType" class="form-select">
+                    <option>New Patient</option>
+                    <option>Existing Patient</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Insurance / Scheme</label>
+                  <select id="patInsurance" class="form-select">
+                    <option value="None / Self Pay">None / Self Pay</option>
+                    <option value="Ayushman Bharat PM-JAY">Ayushman Bharat PM-JAY</option>
+                    <option value="EHS Telangana">EHS Telangana</option>
+                    <option value="CGHS">CGHS</option>
+                    <option value="Star Health Insurance">Star Health Insurance</option>
+                    <option value="HDFC Ergo">HDFC Ergo</option>
+                    <option value="New India Assurance">New India Assurance</option>
+                    <option value="Other Insurance">Other Insurance</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Symptoms / Reason for Visit</label>
+                  <textarea id="patSymptoms" class="form-control" rows="3" placeholder="Briefly describe your symptoms or the reason for this appointment (optional)..."></textarea>
+                </div>
+              </div>
+
+              <p class="text-danger mt-3" id="detailsError" style="display:none;font-size:13px;"><i class="bi bi-exclamation-circle me-1"></i>Please fill in all required fields.</p>
+
+              <div class="step-nav">
+                <button class="btn-prev" onclick="goStep(2)"><i class="bi bi-arrow-left me-2"></i>Back</button>
+                <button class="btn-next" onclick="goStep(4)">Review &amp; Confirm <i class="bi bi-arrow-right ms-2"></i></button>
+              </div>
+            </div>
+
+            <!-- STEP 4: Confirm -->
+            <div class="step-panel" id="step4">
+              <h4 class="mb-1" style="font-size:20px;font-weight:800;">Step 4: Review &amp; Confirm</h4>
+              <p class="text-muted mb-4" style="font-size:14px;">Please verify your appointment details before confirming.</p>
+
+              <div class="row gy-3 mb-4" id="reviewTable">
+                <div class="col-12">
+                  <div style="background:var(--bg-light);border-radius:var(--radius);padding:24px;">
+                    <div class="row gy-3">
+                      <div class="col-md-6">
+                        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-family:var(--font-ui);">Doctor</div>
+                        <div style="font-size:15px;font-weight:700;color:var(--text);margin-top:3px;" id="rv-doctor">—</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-family:var(--font-ui);">Department</div>
+                        <div style="font-size:15px;font-weight:700;color:var(--text);margin-top:3px;" id="rv-dept">—</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-family:var(--font-ui);">Date</div>
+                        <div style="font-size:15px;font-weight:700;color:var(--text);margin-top:3px;" id="rv-date">—</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-family:var(--font-ui);">Time Slot</div>
+                        <div style="font-size:15px;font-weight:700;color:var(--text);margin-top:3px;" id="rv-slot">—</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-family:var(--font-ui);">Patient Name</div>
+                        <div style="font-size:15px;font-weight:700;color:var(--text);margin-top:3px;" id="rv-name">—</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-family:var(--font-ui);">Mobile</div>
+                        <div style="font-size:15px;font-weight:700;color:var(--text);margin-top:3px;" id="rv-phone">—</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-family:var(--font-ui);">Visit Type</div>
+                        <div style="font-size:15px;font-weight:700;color:var(--text);margin-top:3px;" id="rv-visit">—</div>
+                      </div>
+                      <div class="col-md-6">
+                        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-family:var(--font-ui);">Insurance</div>
+                        <div style="font-size:15px;font-weight:700;color:var(--text);margin-top:3px;" id="rv-ins">—</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-highlight">
+                <strong>Confirmation:</strong> After you confirm, our team will send an SMS &amp; email confirmation to you within 30 minutes. Our helpline is available at <strong>+91 40-6600-1001</strong> for any changes.
+              </div>
+
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="agreeCheck">
+                <label class="form-check-label" for="agreeCheck" style="font-size:13px;color:var(--text-muted);">
+                  I confirm that the above details are correct and I agree to the <a href="#" style="color:var(--primary);">terms &amp; appointment policy</a> of Swasthya Hospital.
+                </label>
+              </div>
+
+              <div class="step-nav">
+                <button class="btn-prev" onclick="goStep(3)"><i class="bi bi-arrow-left me-2"></i>Back</button>
+                <button class="btn-next" id="confirmBtn" onclick="confirmAppointment()">
+                  <i class="bi bi-calendar-check me-2"></i>Confirm Appointment
+                </button>
+              </div>
+            </div>
+
+            <!-- STEP 5: Success -->
+            <div class="step-panel" id="step5">
+              <div class="confirmation-box">
+                <div class="confirm-icon"><i class="bi bi-check2-circle"></i></div>
+                <h3 style="font-size:26px;font-weight:800;color:var(--teal);margin-bottom:8px;">Appointment Confirmed!</h3>
+                <p style="color:var(--text-muted);font-size:15px;margin-bottom:16px;">Thank you for choosing Swasthya Hospital. Your appointment has been booked successfully.</p>
+                <div class="confirm-id" id="confirmId">SWH-2025-XXXX</div>
+                <p style="font-size:13px;color:var(--text-muted);margin-top:12px;">
+                  An SMS confirmation has been sent to your registered mobile number.<br>
+                  Please arrive <strong>15 minutes early</strong> with your Aadhaar card and insurance documents.
+                </p>
+                <div class="d-flex gap-3 justify-content-center flex-wrap mt-4">
+                  <a href="index.html" class="dc-book-btn" style="padding:12px 28px;border-radius:50px;max-width:200px;">Back to Home</a>
+                  <a href="doctors.html" class="btn-prev" style="padding:12px 28px;">View All Doctors</a>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /appt-form-card -->
+        </div>
+
+        <!-- RIGHT: Summary -->
+        <div class="col-lg-4">
+          <div class="summary-card" data-aos="fade-up" data-aos-delay="200">
+            <h5><i class="bi bi-clipboard2-pulse me-2"></i>Appointment Summary</h5>
+
+            <div class="summary-row">
+              <span>Doctor</span>
+              <span id="sum-doctor"><em class="summary-empty">Not selected</em></span>
+            </div>
+            <div class="summary-row">
+              <span>Department</span>
+              <span id="sum-dept"><em class="summary-empty">Not selected</em></span>
+            </div>
+            <div class="summary-row">
+              <span>Date</span>
+              <span id="sum-date"><em class="summary-empty">Not selected</em></span>
+            </div>
+            <div class="summary-row">
+              <span>Time Slot</span>
+              <span id="sum-slot"><em class="summary-empty">Not selected</em></span>
+            </div>
+            <div class="summary-row">
+              <span>Visit Type</span>
+              <span id="sum-visit">Walk-In OPD</span>
+            </div>
+            <div class="summary-row">
+              <span>Patient</span>
+              <span id="sum-name"><em class="summary-empty">Not filled</em></span>
+            </div>
+            <div class="summary-row">
+              <span>Location</span>
+              <span id="sum-city"><em class="summary-empty">Not selected</em></span>
+            </div>
+
+            <!-- Contact info -->
+            <div class="mt-4 pt-2" style="border-top:1px solid var(--border);">
+              <div style="font-size:13px;font-weight:700;color:var(--text);font-family:var(--font-ui);margin-bottom:10px;">Need Help?</div>
+              <div style="font-size:13px;color:var(--text-muted);line-height:1.8;">
+                <i class="bi bi-telephone me-2 text-primary"></i> +91 40-6600-1001<br>
+                <i class="bi bi-whatsapp me-2" style="color:#25d366;"></i> +91 98491-00000<br>
+                <i class="bi bi-envelope me-2 text-primary"></i> appointments@swasthyahospital.in
+              </div>
+            </div>
+
+            <!-- Accepted insurance -->
+            <div class="mt-3 pt-2" style="border-top:1px solid var(--border);">
+              <div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px;font-family:var(--font-ui);margin-bottom:8px;">Insurance Accepted</div>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                <span style="font-size:11px;padding:3px 9px;background:rgba(11,83,148,0.08);color:var(--primary);border-radius:50px;font-weight:600;font-family:var(--font-ui);">Ayushman Bharat</span>
+                <span style="font-size:11px;padding:3px 9px;background:rgba(11,83,148,0.08);color:var(--primary);border-radius:50px;font-weight:600;font-family:var(--font-ui);">EHS Telangana</span>
+                <span style="font-size:11px;padding:3px 9px;background:rgba(11,83,148,0.08);color:var(--primary);border-radius:50px;font-weight:600;font-family:var(--font-ui);">CGHS</span>
+                <span style="font-size:11px;padding:3px 9px;background:rgba(11,83,148,0.08);color:var(--primary);border-radius:50px;font-weight:600;font-family:var(--font-ui);">Star Health</span>
+                <span style="font-size:11px;padding:3px 9px;background:rgba(11,83,148,0.08);color:var(--primary);border-radius:50px;font-weight:600;font-family:var(--font-ui);">HDFC Ergo</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="container footer-top">
+    <div class="row gy-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="footer-logo-wrap">
+          <i class="fas fa-heartbeat footer-logo-icon"></i>
+          <div>
+            <span class="footer-logo-text">Swasthya Hospital</span>
+            <small>Banjara Hills, Hyderabad</small>
+          </div>
+        </div>
+        <p class="mt-3">Delivering compassionate, world-class healthcare to Telangana and Andhra Pradesh since 1998.</p>
+        <div class="social-links mt-3">
+          <a href="#"><i class="bi bi-twitter-x"></i></a>
+          <a href="#"><i class="bi bi-facebook"></i></a>
+          <a href="#"><i class="bi bi-instagram"></i></a>
+          <a href="#"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-md-3 footer-links">
+        <h4>Quick Links</h4>
+        <ul>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html">Home</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#about">About Us</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#services">Services</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="doctors.html">Doctors</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="appointment.html">Appointment</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-2 col-md-3 footer-links">
+        <h4>Departments</h4>
+        <ul>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#tabs">Cardiology</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#tabs">Neurology</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#tabs">Pediatrics</a></li>
+          <li><i class="bi bi-chevron-right"></i><a href="index.html#tabs">Oncology</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-4 col-md-12">
+        <h4>Contact &amp; Emergency</h4>
+        <p>
+          <strong style="color:#c0cdd8;">Emergency:</strong> 104 / +91 40-6600-1000<br>
+          <strong style="color:#c0cdd8;">OPD Helpline:</strong> +91 40-6600-1001<br>
+          <strong style="color:#c0cdd8;">Email:</strong> info@swasthyahospital.in<br>
+          <strong style="color:#c0cdd8;">Address:</strong> Plot 12, Road 10, Banjara Hills, Hyderabad – 500034
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <div class="credits">&copy; 2025 <strong>Swasthya Hospital</strong>, Hyderabad. All Rights Reserved.</div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script src="main.js"></script>
+<script>
+  // State
+  const state = { doctor: '', specialty: '', dept: '', date: '', slot: '', visitType: 'Walk-In OPD' };
+
+  // Set min date to today
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('apptDate').min = today;
+
+  // Step navigation
+  function goStep(n) {
+    // Validate current step
+    if (n === 2 && !state.doctor) {
+      document.getElementById('doctorError').style.display = 'block';
+      return;
+    }
+    document.getElementById('doctorError') && (document.getElementById('doctorError').style.display = 'none');
+
+    if (n === 3) {
+      if (!state.date || !state.slot) {
+        document.getElementById('slotError').style.display = 'block';
+        return;
+      }
+      document.getElementById('slotError').style.display = 'none';
+    }
+
+    if (n === 4) {
+      const name = document.getElementById('patName').value.trim();
+      const phone = document.getElementById('patPhone').value.trim();
+      const age = document.getElementById('patAge').value.trim();
+      const gender = document.getElementById('patGender').value;
+      if (!name || !phone || !age || !gender) {
+        document.getElementById('detailsError').style.display = 'block';
+        return;
+      }
+      document.getElementById('detailsError').style.display = 'none';
+      populateReview();
+    }
+
+    // Hide all panels
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('step' + n).classList.add('active');
+
+    // Update step indicators
+    for (let i = 1; i <= 4; i++) {
+      const ind = document.getElementById('step-ind-' + i);
+      const line = document.getElementById('line-' + i);
+      ind.classList.remove('active', 'done');
+      if (line) line.classList.remove('done');
+      if (i < n) { ind.classList.add('done'); if (line) line.classList.add('done'); }
+      if (i === n) ind.classList.add('active');
+    }
+
+    window.scrollTo({ top: 200, behavior: 'smooth' });
+  }
+
+  // Select doctor
+  function selectDoctor(el, name, spec, dept) {
+    document.querySelectorAll('.doctor-picker-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.doctor = name;
+    state.specialty = spec;
+    state.dept = dept;
+    document.getElementById('sum-doctor').textContent = name;
+    document.getElementById('sum-dept').textContent = dept;
+    document.getElementById('doctorError').style.display = 'none';
+  }
+
+  // Filter doctors by dept
+  function filterDoctorsByDept() {
+    const val = document.getElementById('deptSelect').value;
+    document.querySelectorAll('.doctor-pick-col').forEach(col => {
+      col.style.display = (val === 'all' || col.dataset.dept === val) ? '' : 'none';
+    });
+    // Clear selection if filtered out
+    const sel = document.querySelector('.doctor-picker-card.selected');
+    if (sel) {
+      const parent = sel.closest('.doctor-pick-col');
+      if (parent && parent.style.display === 'none') {
+        sel.classList.remove('selected');
+        state.doctor = ''; state.specialty = ''; state.dept = '';
+        document.getElementById('sum-doctor').innerHTML = '<em class="summary-empty">Not selected</em>';
+        document.getElementById('sum-dept').innerHTML = '<em class="summary-empty">Not selected</em>';
+      }
+    }
+  }
+
+  // Select time slot
+  function selectSlot(el, time) {
+    document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+    el.classList.add('selected');
+    state.slot = time;
+    document.getElementById('sum-slot').textContent = time;
+    document.getElementById('slotError').style.display = 'none';
+  }
+
+  // Update date in summary
+  function updateDate() {
+    const val = document.getElementById('apptDate').value;
+    if (val) {
+      const d = new Date(val);
+      const opts = { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' };
+      state.date = d.toLocaleDateString('en-IN', opts);
+      document.getElementById('sum-date').textContent = state.date;
+    }
+  }
+
+  // Update visit type
+  function updateVisitType() {
+    state.visitType = document.getElementById('visitType').value;
+    document.getElementById('sum-visit').textContent = state.visitType;
+  }
+
+  // Update summary from patient form
+  function updateSummary() {
+    const name = document.getElementById('patName').value.trim();
+    const city = document.getElementById('patCity').value;
+    document.getElementById('sum-name').textContent = name || '';
+    if (!name) document.getElementById('sum-name').innerHTML = '<em class="summary-empty">Not filled</em>';
+    document.getElementById('sum-city').textContent = city || '';
+    if (!city) document.getElementById('sum-city').innerHTML = '<em class="summary-empty">Not selected</em>';
+  }
+
+  // Populate review step
+  function populateReview() {
+    document.getElementById('rv-doctor').textContent = state.doctor || '—';
+    document.getElementById('rv-dept').textContent = state.dept || '—';
+    document.getElementById('rv-date').textContent = state.date || '—';
+    document.getElementById('rv-slot').textContent = state.slot || '—';
+    document.getElementById('rv-name').textContent = document.getElementById('patName').value || '—';
+    document.getElementById('rv-phone').textContent = document.getElementById('patPhone').value || '—';
+    document.getElementById('rv-visit').textContent = state.visitType;
+    document.getElementById('rv-ins').textContent = document.getElementById('patInsurance').value || '—';
+  }
+
+  // Confirm appointment
+  function confirmAppointment() {
+    if (!document.getElementById('agreeCheck').checked) {
+      alert('Please agree to the appointment policy to continue.');
+      return;
+    }
+    const btn = document.getElementById('confirmBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="bi bi-hourglass-split me-2"></i>Processing...';
+
+    setTimeout(() => {
+      // Generate booking ID
+      const id = 'SWH-2025-' + Math.floor(1000 + Math.random() * 9000);
+      document.getElementById('confirmId').textContent = id;
+
+      // Show success step
+      document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('step5').classList.add('active');
+
+      // Mark all steps done
+      for (let i = 1; i <= 4; i++) {
+        const ind = document.getElementById('step-ind-' + i);
+        const line = document.getElementById('line-' + i);
+        ind.classList.remove('active');
+        ind.classList.add('done');
+        if (line) line.classList.add('done');
+      }
+
+      window.scrollTo({ top: 200, behavior: 'smooth' });
+    }, 1600);
+  }
+
+  // Pre-select doctor from URL param
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const doc = params.get('doctor');
+    if (doc) {
+      document.querySelectorAll('.doctor-picker-card').forEach(card => {
+        if (card.querySelector('.dpc-name').textContent.trim() === doc) {
+          card.click();
+        }
+      });
+    }
+    if (typeof AOS !== 'undefined') AOS.init({ duration: 700, easing: 'ease-in-out', once: true });
+  });
+</script>
+</body>
+</html>
